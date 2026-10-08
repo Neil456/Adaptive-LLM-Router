@@ -1,0 +1,19 @@
+{
+  "n_questions": 5700,
+  "small_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "large_model": "Qwen/Qwen2.5-3B-Instruct",
+  "small_params": 494032768,
+  "large_params": 3085938688,
+  "small_acc": 0.4819298245614035,
+  "large_acc": 0.6717543859649123,
+  "small_mean_latency_s": 0.13080750924561405,
+  "large_mean_latency_s": 0.6195288450877193,
+  "mean_prompt_tokens": 103.22473684210526,
+  "outcomes": {
+    "Both correct": 2253,
+    "Only small correct": 494,
+    "Only large correct (label = LARGE)": 1576,
+    "Both wrong": 1377
+  },
+  "large_label_rate": 0.27649122807017545
+}

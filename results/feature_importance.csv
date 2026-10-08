@@ -1,0 +1,13 @@
+feature_set,model,feature_group,auc_drop_mean,auc_drop_std
+prompt,Random Forest,prompt length,-0.0025,0.0031
+prompt,Random Forest,numbers,0.0016,0.0011
+prompt,Random Forest,math symbols,-0.0004,0.0007
+prompt,Random Forest,category,0.0010,0.0015
+prompt,Random Forest,embedding,0.0758,0.0128
+prompt,Random Forest,small-model confidence,0.0000,0.0000
+prompt+conf,Random Forest,prompt length,-0.0007,0.0019
+prompt+conf,Random Forest,numbers,0.0082,0.0022
+prompt+conf,Random Forest,math symbols,-0.0012,0.0011
+prompt+conf,Random Forest,category,0.0001,0.0012
+prompt+conf,Random Forest,embedding,0.0323,0.0126
+prompt+conf,Random Forest,small-model confidence,0.1214,0.0152

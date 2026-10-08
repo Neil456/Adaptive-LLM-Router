@@ -1,0 +1,12 @@
+{
+  "small": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "n_params": 494032768,
+    "mean_latency_s": 0.13080751065999932
+  },
+  "large": {
+    "model": "Qwen/Qwen2.5-3B-Instruct",
+    "n_params": 3085938688,
+    "mean_latency_s": 0.619528827391579
+  }
+}
