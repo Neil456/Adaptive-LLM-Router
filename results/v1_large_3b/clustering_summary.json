@@ -27,9 +27,9 @@
   "chosen_k": 8,
   "silhouette": 0.06540197879076004,
   "chi2_cluster_vs_label": {
-    "chi2": 35.532150932290186,
+    "chi2": 21.75060533295663,
     "dof": 7,
-    "p_value": 8.881672342944841e-06
+    "p_value": 0.0028044061609631436
   },
-  "overall_large_label_rate": 0.323859649122807
+  "overall_large_label_rate": 0.27649122807017545
 }

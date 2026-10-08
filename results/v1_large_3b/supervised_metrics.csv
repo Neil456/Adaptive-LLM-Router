@@ -1,0 +1,9 @@
+feature_set,model,cv_roc_auc,cv_roc_auc_std,threshold,best_params,accuracy,f1,roc_auc,pct_pred_large,routing_threshold,selected
+-,Majority class (always SMALL),0.5000,0.0000,,,0.7237,0.0000,0.5000,0.0000,,False
+conf only,Small-model confidence threshold,0.6190,0.0000,0.1352,,0.5035,0.4946,0.6377,0.7061,0.5028,False
+prompt,Logistic Regression,0.5208,0.0169,0.3350,"{""C"": 1.0}",0.2772,0.4309,0.5667,0.9939,0.5376,False
+prompt,Random Forest,0.5317,0.0172,0.2209,"{""max_depth"": null, ""min_samples_leaf"": 5}",0.2842,0.4357,0.5795,0.9921,0.3932,True
+prompt,MLP,0.5216,0.0080,0.0542,"{""alpha"": 0.01, ""hidden_layer_sizes"": [32]}",0.2763,0.4330,0.5515,1.0000,0.3362,False
+prompt+conf,Logistic Regression,0.6116,0.0059,0.4506,"{""C"": 0.1}",0.5509,0.4818,0.6430,0.5904,0.5762,False
+prompt+conf,Random Forest,0.6252,0.0126,0.2250,"{""max_depth"": null, ""min_samples_leaf"": 1}",0.4886,0.4872,0.6603,0.7211,0.3350,True
+prompt+conf,MLP,0.5929,0.0277,0.1905,"{""alpha"": 0.1, ""hidden_layer_sizes"": [64, 32]}",0.3728,0.4312,0.5472,0.8263,0.3382,False

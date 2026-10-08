@@ -1,0 +1,9 @@
+cluster,n,large_label_rate,large_label_ci95,small_acc,large_acc,mean_prompt_tokens,top_category,top_category_share,top_subjects
+0,749,0.2697,0.0318,0.4660,0.6422,112.1095,Humanities,0.6622,formal_logic (98); logical_fallacies (93); professional_law (93)
+1,1106,0.2984,0.0270,0.4901,0.7007,75.6691,STEM,0.5877,anatomy (78); college_biology (78); astronomy (72)
+2,696,0.2270,0.0311,0.6164,0.7773,74.3420,Other,0.4813,management (89); marketing (86); public_relations (85)
+3,892,0.3004,0.0301,0.3139,0.4798,92.6457,STEM,0.7993,high_school_mathematics (98); elementary_mathematics (97); college_physics (70)
+4,770,0.3078,0.0326,0.4481,0.6857,92.3610,Social Sciences,0.4922,high_school_microeconomics (96); high_school_macroeconomics (95); econometrics (76)
+5,845,0.2533,0.0293,0.5988,0.7976,175.7172,Humanities,0.6888,high_school_world_history (100); high_school_european_history (99); high_school_us_history (95)
+6,542,0.2528,0.0366,0.5018,0.6845,101.5646,Other,0.7528,professional_medicine (100); medical_genetics (68); virology (54)
+7,100,0.3000,0.0898,0.2400,0.3100,116.9200,Humanities,1.0000,moral_scenarios (100)

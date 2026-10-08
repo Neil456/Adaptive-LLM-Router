@@ -34,6 +34,7 @@ def main():
         "category": name,
         "n": len(g),
         "small_acc": g["small_correct"].mean(),
+        "mid_acc": g["mid_correct"].mean(),
         "large_acc": g["large_correct"].mean(),
         "large_label_rate": g["label"].mean(),
     } for name, g in groups])
@@ -41,7 +42,7 @@ def main():
 
     by_subject = (
         df.groupby(["category", "subject"])
-        .agg(n=("qid", "size"), small_acc=("small_correct", "mean"),
+        .agg(n=("qid", "size"), small_acc=("small_correct", "mean"), mid_acc=("mid_correct", "mean"),
              large_acc=("large_correct", "mean"), large_label_rate=("label", "mean"))
         .reset_index()
         .sort_values("large_label_rate", ascending=False)
@@ -54,14 +55,10 @@ def main():
     }
     summary = {
         "n_questions": len(df),
-        "small_model": meta["small"]["model"],
-        "large_model": meta["large"]["model"],
-        "small_params": meta["small"]["n_params"],
-        "large_params": meta["large"]["n_params"],
-        "small_acc": df["small_correct"].mean(),
-        "large_acc": df["large_correct"].mean(),
-        "small_mean_latency_s": df["small_latency_s"].mean(),
-        "large_mean_latency_s": df["large_latency_s"].mean(),
+        **{f"{size}_model": m["model"] for size, m in meta.items()},
+        **{f"{size}_params": m["n_params"] for size, m in meta.items()},
+        **{f"{size}_acc": df[f"{size}_correct"].mean() for size in meta},
+        **{f"{size}_mean_latency_s": df[f"{size}_latency_s"].mean() for size in meta},
         "mean_prompt_tokens": df["n_tokens"].mean(),
         "outcomes": outcomes,
         "large_label_rate": df["label"].mean(),
@@ -75,18 +72,19 @@ def main():
 
 def plot(by_cat: pd.DataFrame, df: pd.DataFrame):
     apply_style()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1.5, 1]})
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.2), gridspec_kw={"width_ratios": [1.6, 1]})
 
     x = np.arange(len(by_cat))
-    w = 0.34
-    for offset, col, label, color in [(-w / 2, "small_acc", "Small: Qwen2.5-0.5B", SERIES[0]),
-                                      (w / 2, "large_acc", "Large: Qwen2.5-3B", SERIES[1])]:
+    w = 0.26
+    for offset, col, label, color in [(-w, "small_acc", "Small: Qwen2.5-0.5B", SERIES[0]),
+                                      (0, "mid_acc", "Qwen2.5-3B (v1 large)", SERIES[6]),
+                                      (w, "large_acc", "Large: Qwen2.5-7B", SERIES[1])]:
         err = [ci95(p, n) for p, n in zip(by_cat[col], by_cat["n"])]
         bar(ax1, x + offset, by_cat[col], color, w, label=label)
         ax1.errorbar(x + offset, by_cat[col], yerr=err, fmt="none", ecolor=INK_2, elinewidth=1, capsize=0)
         overall = by_cat[col].iloc[-1]
-        ax1.text(x[-1] + offset, overall + err[-1] + 0.015, f"{overall:.1%}", ha="center", va="bottom",
-                 fontsize=9, color=INK_2)
+        ax1.text(x[-1] + offset, overall + err[-1] + 0.015, f"{overall:.0%}", ha="center", va="bottom",
+                 fontsize=8.5, color=INK_2)
     ax1.axhline(0.25, color=MUTED, linewidth=1)
     ax1.text(-0.66, 0.255, "chance", color=MUTED, fontsize=8, va="bottom")
     ax1.set_xlim(-0.7, len(x) - 0.5)
@@ -96,7 +94,7 @@ def plot(by_cat: pd.DataFrame, df: pd.DataFrame):
     ax1.set_ylabel("QA accuracy")
     ax1.set_title("a) Accuracy by MMLU category (95% CI)")
     ax1.grid(axis="x", visible=False)
-    ax1.legend(loc="upper left", ncols=2)
+    ax1.legend(loc="upper left", ncols=3, fontsize=8.5, handlelength=1.2, columnspacing=1.0)
 
     names = list(OUTCOMES)
     shares = [((df["small_correct"] == s) & (df["large_correct"] == l)).mean() for s, l in OUTCOMES.values()]

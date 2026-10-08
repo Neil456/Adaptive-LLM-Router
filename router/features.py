@@ -6,7 +6,9 @@ Features (all available before the large model is called):
   - num_math_symbols  count of math operators / symbols
   - category          MMLU super-category (STEM, Humanities, Social Sciences, Other)
   - emb_*             sentence embedding of question + choices (all-MiniLM-L6-v2, 384-d)
-  - small_conf        optional: the small model's probability for its chosen answer
+  - small_conf, small_margin, small_entropy
+                      optional: the small model's probability for its chosen answer, the gap to
+                      its second choice, and the entropy of its answer distribution
 
 Usage: python -m router.features
 """
@@ -27,7 +29,7 @@ MATH_RE = re.compile(r"[+*/=^<>%√∑∫π×÷≤≥≠±∞∈∪∩]|\s[-−]
 
 NUMERIC_FEATURES = ["prompt_tokens", "num_numbers", "num_math_symbols"]
 CATEGORICAL_FEATURES = ["category"]
-CONFIDENCE_FEATURES = ["small_conf"]
+CONFIDENCE_FEATURES = ["small_conf", "small_margin", "small_entropy"]
 
 
 def question_text(row) -> str:
@@ -38,6 +40,8 @@ def question_text(row) -> str:
 
 def handcrafted_features(df: pd.DataFrame) -> pd.DataFrame:
     text = df.apply(question_text, axis=1)
+    probs = df[[f"small_p_{letter}" for letter in "ABCD"]].to_numpy()
+    top2 = -np.sort(-probs, axis=1)[:, :2]
     return pd.DataFrame({
         "qid": df["qid"],
         "prompt_tokens": df["n_tokens"],
@@ -45,6 +49,8 @@ def handcrafted_features(df: pd.DataFrame) -> pd.DataFrame:
         "num_math_symbols": text.map(lambda t: len(MATH_RE.findall(t))),
         "category": df["category"],
         "small_conf": df["small_conf"],
+        "small_margin": top2[:, 0] - top2[:, 1],
+        "small_entropy": -(probs * np.log(np.clip(probs, 1e-12, None))).sum(axis=1),
     })
 
 

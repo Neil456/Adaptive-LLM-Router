@@ -1,10 +1,10 @@
 """Step 4: train and compare supervised routers (Figure 2).
 
-Three classifiers (Logistic Regression, Random Forest, MLP) predict LARGE vs SMALL from two
-feature sets:
+Four classifiers (Logistic Regression, Random Forest, histogram gradient boosting, MLP)
+predict LARGE vs SMALL from two feature sets:
   - "prompt":      prompt length, number/math-symbol counts, category, PCA of the embedding
-  - "prompt+conf": the same plus the small model's confidence (requires running the small
-                   model first, i.e. a cascade)
+  - "prompt+conf": the same plus the small model's confidence, margin and answer entropy
+                   (requires running the small model first, i.e. a cascade)
 
 Hyperparameters are tuned with 5-fold stratified CV on the training split (ROC-AUC). Two
 thresholds are picked from out-of-fold training predictions, so the test split is only
@@ -24,7 +24,7 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_recall_curve, roc_auc_score
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_val_predict, cross_val_score
@@ -48,6 +48,10 @@ MODELS = {
         RandomForestClassifier(n_estimators=400, class_weight="balanced_subsample", random_state=SEED),
         {"clf__max_depth": [6, 12, None], "clf__min_samples_leaf": [1, 5, 20]},
     ),
+    "Gradient Boosting": (
+        HistGradientBoostingClassifier(class_weight="balanced", early_stopping=True, random_state=SEED),
+        {"clf__learning_rate": [0.03, 0.1], "clf__max_leaf_nodes": [7, 15, 31], "clf__l2_regularization": [0.0, 1.0]},
+    ),
     "MLP": (
         MLPClassifier(max_iter=1000, early_stopping=True, random_state=SEED),
         {"clf__hidden_layer_sizes": [(32,), (64, 32)], "clf__alpha": [1e-3, 1e-2, 1e-1, 1.0]},
@@ -59,7 +63,7 @@ FEATURE_GROUPS = {
     "math symbols": ["num_math_symbols"],
     "category": ["category"],
     "embedding": None,  # filled with the emb_* columns
-    "small-model confidence": ["small_conf"],
+    "small-model confidence": CONFIDENCE_FEATURES,
 }
 
 
@@ -147,6 +151,7 @@ def main():
 
     rows = []
     preds = pd.DataFrame({"qid": df.loc[test, "qid"].to_numpy(), "label": y_test})
+    oof_preds = pd.DataFrame({"qid": df.loc[train, "qid"].to_numpy(), "label": y_train})
     fitted = {}
 
     # Reference rows: the majority class, and thresholding the small model's confidence alone.
@@ -160,6 +165,7 @@ def main():
                  "routing_threshold": base_rate_threshold(y_train, conf_train),
                  "best_params": "", **evaluate(y_test, conf_test, t)})
     preds["Confidence threshold|conf only"] = conf_test
+    oof_preds["Confidence threshold|conf only"] = conf_train
 
     for fs_name, use_conf in FEATURE_SETS.items():
         for model_name, (model, grid) in MODELS.items():
@@ -181,6 +187,7 @@ def main():
             }
             rows.append(row)
             preds[f"{model_name}|{fs_name}"] = proba
+            oof_preds[f"{model_name}|{fs_name}"] = oof
             fitted[(fs_name, model_name)] = search.best_estimator_
             print(f"{fs_name:12s} {model_name:20s} cv_auc={row['cv_roc_auc']:.3f} "
                   f"test acc={row['accuracy']:.3f} f1={row['f1']:.3f} auc={row['roc_auc']:.3f}")
@@ -194,6 +201,8 @@ def main():
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(RESULTS_DIR / "supervised_metrics.csv", index=False, float_format="%.4f")
     preds.to_csv(RESULTS_DIR / "router_test_predictions.csv", index=False, float_format="%.6f")
+    # Out-of-fold scores on the training split, used to pick routing thresholds without the test set.
+    oof_preds.to_csv(RESULTS_DIR / "router_train_oof.csv", index=False, float_format="%.6f")
     print(metrics.drop(columns=["best_params"]).to_string(index=False))
 
     groups = {k: (emb_cols if v is None else v) for k, v in FEATURE_GROUPS.items()}
@@ -216,10 +225,10 @@ def main():
 
 def plot(metrics: pd.DataFrame):
     apply_style()
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4))
     models = list(MODELS)
     x = np.arange(len(models))
-    w = 0.34
+    w = 0.36
     majority = metrics[metrics["model"].str.startswith("Majority")].iloc[0]
     conf_only = metrics[metrics["feature_set"] == "conf only"].iloc[0]
     for ax, metric, title in zip(axes, ["accuracy", "f1", "roc_auc"], ["Accuracy", "F1 (LARGE class)", "ROC-AUC"]):
@@ -234,10 +243,10 @@ def plot(metrics: pd.DataFrame):
                 "roc_auc": [(conf_only["roc_auc"], "confidence\nonly"), (0.5, "chance")]}
         for ref_val, ref_label in refs[metric]:
             ax.axhline(ref_val, color=MUTED, linewidth=1)
-            ax.text(len(models) - 0.6, ref_val, ref_label, ha="left", va="center", fontsize=8, color=MUTED,
+            ax.text(len(models) - 0.45, ref_val, ref_label, ha="left", va="center", fontsize=8, color=MUTED,
                     bbox={"facecolor": SURFACE, "edgecolor": "none", "pad": 1})
-        ax.set_xlim(-0.55, len(models) + 0.1)
-        ax.set_xticks(x, ["Logistic\nRegression", "Random\nForest", "MLP"])
+        ax.set_xlim(-0.55, len(models) + 0.3)
+        ax.set_xticks(x, ["Logistic\nRegression", "Random\nForest", "Gradient\nBoosting", "MLP"])
         ax.set_ylim(0, 1)
         ax.set_title(title)
         ax.grid(axis="x", visible=False)

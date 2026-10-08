@@ -1,8 +1,12 @@
-policy,accuracy,pct_large,compute_flops,compute_latency,accuracy_std,threshold,gain_vs_random,gain_ci_low,gain_ci_high,compute_saved_flops,compute_saved_latency
-Always small,0.4763,0.0000,0.1601,0.2124,,,,,,0.8399,0.7876
-Always large,0.6754,1.0000,1.0000,1.0000,,,,,,0.0000,0.0000
-Random routing (matched to learned router (prompt features)),0.5331,0.2858,0.4003,0.4376,0.0079,,,,,0.5997,0.5624
-Learned router (prompt features) [Random Forest],0.5482,0.2860,0.4021,0.4490,,0.3932,0.0150,-0.0016,0.0305,0.5979,0.5510
-Random routing (matched to learned router (+ small-model confidence)),0.5317,0.2777,0.3933,0.4302,0.0078,,,,,0.6067,0.5698
-Learned router (+ small-model confidence) [Random Forest],0.5632,0.2772,0.4229,0.4785,,0.3350,0.0316,0.0150,0.0493,0.5771,0.5215
-Oracle router (upper bound),0.7526,0.2763,0.3815,0.4287,,,,,,0.6185,0.5713
+policy,accuracy,pct_large,compute_flops,compute_latency,operating_point,accuracy_std,threshold,gain_vs_random,gain_ci_low,gain_ci_high,compute_saved_flops,compute_saved_latency
+Always small,0.4789,0.0000,0.0649,0.0614,,,,,,,0.9351,0.9386
+Always large,0.7263,1.0000,1.0000,1.0000,,,,,,,0.0000,0.0000
+Random routing (matched to learned router (prompt features)),0.5669,0.3552,0.3969,0.3945,budget,0.0090,,,,,0.6031,0.6055
+Learned router (prompt features) [Random Forest],0.5798,0.3553,0.3884,0.3929,budget,,0.5059,0.0130,-0.0049,0.0302,0.6116,0.6071
+Random routing (matched to learned router (prompt features)),0.6849,0.8333,0.8441,0.8434,quality,0.0071,,,,,0.1559,0.1566
+Learned router (prompt features) [Random Forest],0.6974,0.8333,0.8537,0.8535,quality,,0.4406,0.0123,-0.0000,0.0246,0.1463,0.1465
+Random routing (matched to learned router (+ small-model confidence)),0.5621,0.3372,0.3808,0.3782,budget,0.0090,,,,,0.6192,0.6218
+Learned router (+ small-model confidence) [Random Forest],0.6026,0.3368,0.3943,0.3933,budget,,0.4983,0.0404,0.0219,0.0595,0.6057,0.6067
+Random routing (matched to learned router (+ small-model confidence)),0.6581,0.7237,0.7417,0.7407,quality,0.0083,,,,,0.2583,0.2593
+Learned router (+ small-model confidence) [Random Forest],0.7035,0.7237,0.8159,0.8077,quality,,0.3551,0.0455,0.0328,0.0574,0.1841,0.1923
+Oracle router (upper bound),0.8026,0.3237,0.3795,0.3697,,,,,,,0.6205,0.6303

@@ -1,4 +1,4 @@
 target,positive_rate,cv_roc_auc,cv_roc_auc_std
-small model wrong,0.5167,0.6255,0.0145
-large model wrong,0.3292,0.6511,0.0137
-"LARGE label (small wrong, large right)",0.2765,0.5167,0.0160
+small model wrong,0.5173,0.6398,0.0130
+large model wrong,0.2654,0.6667,0.0238
+"LARGE label (small wrong, large right)",0.3239,0.5487,0.0115

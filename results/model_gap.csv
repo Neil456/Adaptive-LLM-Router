@@ -1,0 +1,3 @@
+large_model,large_params_b,small_compute_share,always_small_acc,always_large_acc,large_label_rate,both_wrong_rate,conf_router_auc,conf_router_apgr,conf_router_cpt50,conf_router_cpt80,budget_accuracy,budget_pct_large,budget_compute,budget_gain_vs_random,budget_gain_ci_low,budget_gain_ci_high,quality_accuracy,quality_pct_large,quality_compute,quality_gain_vs_random,quality_gain_ci_low,quality_gain_ci_high
+Qwen/Qwen2.5-3B-Instruct,3.0859,0.1601,0.4789,0.6632,0.2781,0.2430,0.6132,0.5653,0.4298,0.6000,0.5263,0.2930,0.4572,-0.0066,-0.0233,0.0121,0.6439,0.6868,0.8847,0.0384,0.0246,0.0523
+Qwen/Qwen2.5-7B-Instruct,7.6156,0.0649,0.4789,0.7263,0.3237,0.1974,0.6126,0.5461,0.4500,0.6553,0.5693,0.3526,0.4240,0.0031,-0.0151,0.0219,0.6965,0.7298,0.8366,0.0370,0.0248,0.0496

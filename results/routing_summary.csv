@@ -1,0 +1,9 @@
+router,large_model,apgr,cpt50,cpt80
+Learned router (prompt features),Qwen/Qwen2.5-7B-Instruct,0.5422,0.4561,0.7395
+Learned router (+ small-model confidence),Qwen/Qwen2.5-7B-Instruct,0.6231,0.3404,0.6351
+confidence only,Qwen/Qwen2.5-7B-Instruct,0.5461,0.4500,0.6553
+Learned router (prompt features) (train CV),Qwen/Qwen2.5-7B-Instruct,0.5407,0.4351,0.7700
+Learned router (+ small-model confidence) (train CV),Qwen/Qwen2.5-7B-Instruct,0.5908,0.3800,0.6750
+Random routing,Qwen/Qwen2.5-7B-Instruct,0.5000,0.5000,0.8000
+Learned router (prompt features) (v1),Qwen/Qwen2.5-3B-Instruct,0.5795,0.3947,0.6851
+Learned router (+ small-model confidence) (v1),Qwen/Qwen2.5-3B-Instruct,0.6338,0.3465,0.6246

@@ -8,3 +8,5 @@ scipy>=1.13
 numpy>=2.0
 pandas>=2.2
 matplotlib>=3.9
+# Only needed to re-run the 7B model in step 1 (build with CMAKE_ARGS="-DGGML_NATIVE=ON" for speed)
+llama-cpp-python>=0.3
