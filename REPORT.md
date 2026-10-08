@@ -497,7 +497,7 @@ Two ideas did not help and were left out:
 
 [14] G. Gerganov *et al.*, "llama.cpp," GitHub repository, 2023. [Online]. Available: https://github.com/ggml-org/llama.cpp
 
-[15] Z. Zhao, E. Wallace, S. Feng, D. Klein, and S. Singh, "Calibrate before use: Improving few-shot performance of language models," in *Proc. Int. Conf. Mach. Learn. (ICML)*, 2021.
+[15] T. Z. Zhao, E. Wallace, S. Feng, D. Klein, and S. Singh, "Calibrate before use: Improving few-shot performance of language models," in *Proc. Int. Conf. Mach. Learn. (ICML)*, 2021.
 
 ---
 
